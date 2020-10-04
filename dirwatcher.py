@@ -3,9 +3,11 @@
 Dirwatcher - A long-running program
 """
 
-__author__ = "???"
+__author__ = "Gordon Mathurin"
 
 import sys
+import logging
+import signal
 
 
 def search_for_magic(filename, start_line, magic_string):
