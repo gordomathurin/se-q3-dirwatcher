@@ -17,8 +17,15 @@ exit_flag = False
 master_dict = {}
 
 
-def is_dir(path):
-    return
+def check_dir_status(path):
+    """ Checks if directory exists, if not create it """
+    if not os.path.isdir(path):
+        try:
+            os.makedirs(path)
+        except OSError:
+            print(f'Creation of dir {path} failed')
+            return False
+    return True
 
 
 def watch_directory(path, magic_string, extension, interval):
@@ -55,14 +62,14 @@ def create_parser():
     parser = argparse.ArgumentParser(
         description="Watch for specfic word to be added")
     parser.add_argument(
-        '--topoll', help='controls polling interval', action='')
-    parser.add_argument('--tosearch',
+        'p', '--topoll', help='controls polling interval', action='')
+    parser.add_argument('s', '--tosearch',
                         help='search for magic word', action='')
     parser.add_argument(
-        '--tofilter',
+        'f', '--tofilter',
         help='filters what kind of file extenion to search within', action='')
     parser.add_argument(
-        '--todir', help='specifies the directory to watch', action='')
+        'd', '--todir', help='specifies the directory to watch', action='')
     return parser
     return
 
