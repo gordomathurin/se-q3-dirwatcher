@@ -14,14 +14,39 @@ import os
 
 exit_flag = False
 
+master_dict = {}
 
-def search_for_magic(filename, start_line, magic_string):
-    # Your code here
+
+def is_dir(path):
     return
 
 
 def watch_directory(path, magic_string, extension, interval):
     # Your code here
+    temp_dict = {}
+    # check if directory exists, if exist use os.walk() and look at file --> can be its a own function
+    # might want to have 2 dicts master and temp(temp inside function)
+    # maybe add files as keys in temp dict
+    # compare temp to master to see if added into master
+
+    # use try except logic for both functions
+
+    try:
+        pass
+    except Exception as e:
+        pass
+
+    return
+
+
+def search_for_magic(filename, start_line, magic_string):
+    # Your code here
+    # use master dict to check for magic dict
+
+    try:
+        pass
+    except Exception as e:
+        pass
     return
 
 
