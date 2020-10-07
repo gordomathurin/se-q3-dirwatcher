@@ -11,17 +11,11 @@ import os
 import logging
 import signal
 import datetime
-import time
+# import time
 
 exit_flag = False
 start_time = ''
-
 master_dict = {}
-
-# might want to have 2 dicts master and temp(temp inside function)
-# maybe add files as keys in temp dict
-# compare temp to master to see if added into master
-# use try except logic for both functions
 
 
 def create_dir(path):
@@ -38,15 +32,15 @@ def create_dir(path):
     return True
 
 
-def scan_single_file():
+def scan_single_file(filename):
     pass
 
 
-def detect_added_files():
+def detect_added_files(filename):
     pass
 
 
-def detect_removed_files():
+def detect_removed_files(filename):
     pass
 
 
@@ -59,12 +53,13 @@ def watch_directory(path, magic_string, extension, interval):
     if not check_dir_status:
         return
     else:
-
+        pass
     return
 
 
 def signal_handler(sig_num, frame):
     # Your code here
+    """Signal event handler setup"""
     global exit_flag
     global start_time
     logger = logging.getLogger(__name__)
@@ -74,17 +69,18 @@ def signal_handler(sig_num, frame):
     logger2.setLevel(logging.INFO)
     logger2.info(
         f"""
-        ------------------------------------------------
+        -----------------------------------------------------
         \tStopped {sys.argv[0]}
         \tUptime was: {datetime.datetime.now() - start_time}
-        ------------------------------------------------
-        """
+        -----------------------------------------------------
+       """
     )
     exit_flag = True
 
 
 def search_for_magic(filename, watch_directory, magic_string):
     # Your code here
+    """Search for magic word thru file"""
     with open(f'{watch_directory}/{filename}') as f:
         for i, line in enumerate(f):
             if magic_string in line.lower():
@@ -123,27 +119,27 @@ def main(args):
 
     ns = parser.parse_args(args)
 
-    ext = ns.tofilter
-    polling_interval = ns.interval
-    magic_string = ns.magic
-    directory_watch = ns.todir
+    # ext = ns.tofilter
+    # polling_interval = ns.interval
+    # magic_string = ns.magic
+    # directory_watch = ns.todir
 
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-    # Now my signal_handler will get called if OS sends
-    # either of these to my process.
+    # signal.signal(signal.SIGINT, signal_handler)
+    # signal.signal(signal.SIGTERM, signal_handler)
+    # # Now my signal_handler will get called if OS sends
+    # # either of these to my process.
 
-    while not exit_flag:
-        try:
-            # call my directory watching function
-            pass
-        except Exception as e:
-            # This is an UNHANDLED exception
-            # Log an ERROR level message here
-            pass
+    # while not exit_flag:
+    #     try:
+    #         # call my directory watching function
+    #         pass
+    #     except Exception as e:
+    #         # This is an UNHANDLED exception
+    #         # Log an ERROR level message here
+    #         pass
 
-        # put a sleep inside my while loop so I don't peg the cpu usage at 100%
-        time.sleep(polling_interval)
+    #     # put a sleep inside my while loop so I don't peg the cpu usage at 100%
+    #     time.sleep(polling_interval)
 
 
 if __name__ == '__main__':
