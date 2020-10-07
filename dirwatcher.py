@@ -71,15 +71,33 @@ def signal_handler(sig_num, frame):
     exit_flag = True
 
 
-def search_for_magic(filename, start_line, magic_string):
+def search_for_magic(filename, watch_directory, magic_string):
     # Your code here
-    # use master dict to check for magic dict
+    with open(f'{watch_directory}/{filename}') as f:
+        for i, line in enumerate(f):
+            if magic_string in line.lower():
+                logger = logging.getLogger(__name__)
+                logger.setLevel(logging.INFO)
+                logger.info(f'magic word found in {filename} on line {i+1}')
+                global master_dict
+            else:
+                continue
 
-    try:
-        pass
-    except Exception as e:
-        pass
-    return
+
+def scan_single_file():
+    pass
+
+
+def detect_added_files():
+    pass
+
+
+def detect_removed_files():
+    pass
+
+
+def watch_directory():
+    pass
 
 
 def create_parser():
