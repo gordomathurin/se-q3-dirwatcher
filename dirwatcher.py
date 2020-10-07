@@ -5,22 +5,22 @@ Dirwatcher - A long-running program
 
 __author__ = "Gordon Mathurin"
 
+import argparse
 import sys
+import os
 import logging
 import signal
+import datetime
 import time
-import argparse
-import os
 
 exit_flag = False
+start_time = ''
 
 master_dict = {}
 
-# check if directory exists, if exist use os.walk() and look at file --> can be its a own function
 # might want to have 2 dicts master and temp(temp inside function)
 # maybe add files as keys in temp dict
 # compare temp to master to see if added into master
-
 # use try except logic for both functions
 
 
@@ -30,7 +30,10 @@ def create_dir(path):
         try:
             os.makedirs(path)
         except OSError:
-            logging.info(f'Creation of dir {path} failed')
+            logger = logging.getLogger(__name__)
+            logger.setLevel(logging.ERROR)
+            logger.error(
+                f'Creation of directory {path} failed, Directory already exists')
             return False
     return True
 
@@ -40,25 +43,32 @@ def watch_directory(path, magic_string, extension, interval):
     # temp_dict = {}
 
     check_dir_status = create_dir(path)
-    signal.signal(signal.SIGINT, signal_handler)
 
     if not check_dir_status:
         return
-
-    while
-    try:
-        pass
-    except Exception as e:
-        pass
+    else:
 
     return
 
 
 def signal_handler(sig_num, frame):
     # Your code here
-    # log the associated signal name
-    logging.warn('Received ' + signal.Signals(sig_num).name)
-    return
+    global exit_flag
+    global start_time
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.WARNING)
+    logger.warning('Received ' + signal.Signals(sig_num).name)
+    logger2 = logging.getLogger(__name__)
+    logger2.setLevel(logging.INFO)
+    logger2.info(
+        f"""
+        ------------------------------------------------
+        \tStopped {sys.argv[0]}
+        \tUptime was: {datetime.datetime.now() - start_time}
+        ------------------------------------------------
+        """
+    )
+    exit_flag = True
 
 
 def search_for_magic(filename, start_line, magic_string):
