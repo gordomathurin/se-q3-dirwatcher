@@ -38,6 +38,18 @@ def create_dir(path):
     return True
 
 
+def scan_single_file():
+    pass
+
+
+def detect_added_files():
+    pass
+
+
+def detect_removed_files():
+    pass
+
+
 def watch_directory(path, magic_string, extension, interval):
     # Your code here
     # temp_dict = {}
@@ -82,22 +94,6 @@ def search_for_magic(filename, watch_directory, magic_string):
                 global master_dict
             else:
                 continue
-
-
-def scan_single_file():
-    pass
-
-
-def detect_added_files():
-    pass
-
-
-def detect_removed_files():
-    pass
-
-
-def watch_directory():
-    pass
 
 
 def create_parser():
