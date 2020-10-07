@@ -16,33 +16,48 @@ exit_flag = False
 
 master_dict = {}
 
+# check if directory exists, if exist use os.walk() and look at file --> can be its a own function
+# might want to have 2 dicts master and temp(temp inside function)
+# maybe add files as keys in temp dict
+# compare temp to master to see if added into master
 
-def check_dir_status(path):
+# use try except logic for both functions
+
+
+def create_dir(path):
     """ Checks if directory exists, if not create it """
     if not os.path.isdir(path):
         try:
             os.makedirs(path)
         except OSError:
-            print(f'Creation of dir {path} failed')
+            logging.info(f'Creation of dir {path} failed')
             return False
     return True
 
 
 def watch_directory(path, magic_string, extension, interval):
     # Your code here
-    temp_dict = {}
-    # check if directory exists, if exist use os.walk() and look at file --> can be its a own function
-    # might want to have 2 dicts master and temp(temp inside function)
-    # maybe add files as keys in temp dict
-    # compare temp to master to see if added into master
+    # temp_dict = {}
 
-    # use try except logic for both functions
+    check_dir_status = create_dir(path)
+    signal.signal(signal.SIGINT, signal_handler)
 
+    if not check_dir_status:
+        return
+
+    while
     try:
         pass
     except Exception as e:
         pass
 
+    return
+
+
+def signal_handler(sig_num, frame):
+    # Your code here
+    # log the associated signal name
+    logging.warn('Received ' + signal.Signals(sig_num).name)
     return
 
 
@@ -62,34 +77,32 @@ def create_parser():
     parser = argparse.ArgumentParser(
         description="Watch for specfic word to be added")
     parser.add_argument(
-        'p', '--topoll', help='controls polling interval', action='')
-    parser.add_argument('s', '--tosearch',
-                        help='search for magic word', action='')
+        '--interval', help='controls polling interval',
+        type=int, default=3)
+    parser.add_argument('--magic',
+                        help='magic string to look for')
     parser.add_argument(
-        'f', '--tofilter',
-        help='filters what kind of file extenion to search within', action='')
+        '--tofilter',
+        help='filters what kind of file extenion to search within')
     parser.add_argument(
-        'd', '--todir', help='specifies the directory to watch', action='')
+        '--todir', help='specifies the directory to watch')
     return parser
-    return
-
-
-def signal_handler(sig_num, frame):
-    # Your code here
-    # log the associated signal name
-    logger.warn('Received ' + signal.Signals(sig_num).name)
-    return
 
 
 def main(args):
     # Your code here
     parser = create_parser()
-    ns = parser.parse_args(args)
 
     if not ns:
         parser.print_usage()
         sys.exit(1)
-    return
+
+    ns = parser.parse_args(args)
+
+    ext = ns.tofilter
+    polling_interval = ns.interval
+    magic_string = ns.magic
+    directory_watch = ns.todir
 
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
