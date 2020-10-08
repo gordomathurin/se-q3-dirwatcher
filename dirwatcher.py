@@ -22,7 +22,6 @@ logger = logging.getLogger(__name__)
 
 def create_dir(ns):
     """ Checks if directory exists, return true or false"""
-    error_message = 'Creation of directory failed or directory already exists'
     if os.path.isdir(ns.todir):
         return True
     else:
