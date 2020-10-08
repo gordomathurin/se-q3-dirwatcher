@@ -16,7 +16,7 @@ import datetime
 exit_flag = False
 start_time = ''
 master_dict = {}
-logging.basicConfig(level=loggin.DEBUG, format='%(levelname),%(message)')
+logging.basicConfig(level=logging.DEBUG, format='%(levelname)s,%(message)s')
 logger = logging.getLogger(__name__)
 
 
@@ -101,7 +101,7 @@ def search_for_magic(ns):
                         if i not in master_dict[file]:
                             master_dict[file].append(i)
                             logger.info(
-                                f'magic word found in {filename} on line {i+1}')
+                                f'Magic Word: {file} on line {i+1}')
     except Exception as e:
         logger.exception(f'{e}')
 
@@ -127,17 +127,11 @@ def create_parser():
 def main(args):
     # Your code here
     parser = create_parser()
+    ns = parser.parse_args(args)
 
     if not ns:
         parser.print_usage()
         sys.exit(1)
-
-    ns = parser.parse_args(args)
-
-    # ext = ns.tofilter
-    # polling_interval = ns.interval
-    # magic_string = ns.magic
-    # directory_watch = ns.todir
 
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
@@ -146,13 +140,14 @@ def main(args):
         try:
             # call my directory watching function
             watch_directory(ns)
+            compare_dict(ns)
+            search_for_magic(ns)
         except Exception as e:
-            # This is an UNHANDLED exception
-            # Log an ERROR level message here
-            pass
+            logger.exception(f'{e}')
 
-        # put a sleep inside my while loop so I don't peg the cpu usage at 100%
-        time.sleep(polling_interval)
+        # put a sleep inside my while loop so I don't peg the
+        #  cpu usage at 100%
+        # time.sleep(polling_interval)
 
 
 if __name__ == '__main__':
