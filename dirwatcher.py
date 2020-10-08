@@ -76,6 +76,7 @@ def watch_directory(ns):
 
 
 def compare_dict(temp_dict, ns):
+    """ Compares files between mast dict and temp dict"""
     try:
         for file in temp_dict:
             if file not in master_dict:
@@ -89,18 +90,20 @@ def compare_dict(temp_dict, ns):
         logger.exception(f'{e}')
 
 
-def search_for_magic(filename, watch_directory, magic_string):
+def search_for_magic(ns):
     # Your code here
-    """Search for magic word thru file"""
-    with open(f'{watch_directory}/{filename}') as f:
-        for i, line in enumerate(f):
-            if magic_string in line.lower():
-                logger = logging.getLogger(__name__)
-                logger.setLevel(logging.INFO)
-                logger.info(f'magic word found in {filename} on line {i+1}')
-                global master_dict
-            else:
-                continue
+    """Search for magic word through file"""
+    try:
+        for file in master_dict:
+            with open(f'{ns.todir}/{file}') as f:
+                for i, line in enumerate(f):
+                    if ns.magic in line:
+                        if i not in master_dict[file]:
+                            master_dict[file].append(i)
+                            logger.info(
+                                f'magic word found in {filename} on line {i+1}')
+    except Exception as e:
+        logger.exception(f'{e}')
 
 
 def create_parser():
