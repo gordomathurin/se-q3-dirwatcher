@@ -16,46 +16,25 @@ import datetime
 exit_flag = False
 start_time = ''
 master_dict = {}
+logging.basicConfig(level=loggin.DEBUG, format='%(levelname),%(message)')
+logger = logging.getLogger(__name__)
 
 
-def create_dir(path):
-    """ Checks if directory exists, if not create it """
-    if not os.path.isdir(path):
-        try:
-            os.makedirs(path)
-        except OSError:
-            logger = logging.getLogger(__name__)
-            logger.setLevel(logging.ERROR)
-            logger.error(
-                f'Creation of directory {path} failed, Directory already exists')
-            return False
-    return True
-
-
-def scan_single_file(filename):
-    pass
-
-
-def detect_added_files(filename):
-    pass
-
-
-def detect_removed_files(filename):
-    pass
-
-
-def watch_directory(path, magic_string, extension, interval):
-    # Your code here
-    # temp_dict = {}
-
-    check_dir_status = create_dir(path)
-
-    if not check_dir_status:
-        return
+def create_dir(ns):
+    """ Checks if directory exists, return true or false"""
+    error_message = 'Creation of directory failed or directory already exists'
+    if os.path.isdir(ns.todir):
+        return True
     else:
-        pass
-    return
+        return False
 
+
+# def scan_single_file(filename):
+#     logger = logging.getLogger(__name__)
+#     logger.setLevel(logging.info)
+#     logger.error('')
+
+#     pass
 
 def signal_handler(sig_num, frame):
     # Your code here
@@ -78,6 +57,24 @@ def signal_handler(sig_num, frame):
     exit_flag = True
 
 
+def watch_directory(ns):
+    # Your code here
+    temp_dict = {}
+    check_dir_status = create_dir(ns.todir)
+
+    try:
+        if check_dir_status:
+            for content in os.walk(ns.todir):
+                files = content[2]
+            for file in files:
+                if file.endswith(ns.tofilter):
+                    temp_dict.setdefault(file, [])
+        else:
+            logger.error(f"{ns.todir} doesn't exists")
+    except Exception as e:
+        logger.exception(f'{e}')
+
+
 def search_for_magic(filename, watch_directory, magic_string):
     # Your code here
     """Search for magic word thru file"""
@@ -98,14 +95,15 @@ def create_parser():
         description="Watch for specfic word to be added")
     parser.add_argument(
         '--interval', help='controls polling interval',
-        type=int, default=3)
-    parser.add_argument('--magic',
+        type=int, default=1)
+    parser.add_argument('magic',
                         help='magic string to look for')
     parser.add_argument(
         '--tofilter',
-        help='filters what kind of file extenion to search within')
+        help='filters what kind of file extenion to search within',
+        default='.txt')
     parser.add_argument(
-        '--todir', help='specifies the directory to watch')
+        'todir', help='specifies the directory to watch')
     return parser
 
 
@@ -124,22 +122,20 @@ def main(args):
     # magic_string = ns.magic
     # directory_watch = ns.todir
 
-    # signal.signal(signal.SIGINT, signal_handler)
-    # signal.signal(signal.SIGTERM, signal_handler)
-    # # Now my signal_handler will get called if OS sends
-    # # either of these to my process.
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
 
-    # while not exit_flag:
-    #     try:
-    #         # call my directory watching function
-    #         pass
-    #     except Exception as e:
-    #         # This is an UNHANDLED exception
-    #         # Log an ERROR level message here
-    #         pass
+    while not exit_flag:
+        try:
+            # call my directory watching function
+            watch_directory(ns)
+        except Exception as e:
+            # This is an UNHANDLED exception
+            # Log an ERROR level message here
+            pass
 
-    #     # put a sleep inside my while loop so I don't peg the cpu usage at 100%
-    #     time.sleep(polling_interval)
+        # put a sleep inside my while loop so I don't peg the cpu usage at 100%
+        time.sleep(polling_interval)
 
 
 if __name__ == '__main__':
