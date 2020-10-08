@@ -48,6 +48,7 @@ def signal_handler(sig_num, frame):
     :return None
     """
     # log the associated signal name
+
     logger.warn('Received ' + signal.Signals(sig_num).name)
 
 

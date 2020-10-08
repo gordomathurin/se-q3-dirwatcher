@@ -75,6 +75,20 @@ def watch_directory(ns):
         logger.exception(f'{e}')
 
 
+def compare_dict(temp_dict, ns):
+    try:
+        for file in temp_dict:
+            if file not in master_dict:
+                logger.info(f'{file} was added to {ns.todir}')
+                master_dict[file] = []
+        for file in master_dict:
+            if file not in temp_dict:
+                logger.info(f'{file} was deleted from {ns.todir}')
+                del master_dict[file]
+    except Exception as e:
+        logger.exception(f'{e}')
+
+
 def search_for_magic(filename, watch_directory, magic_string):
     # Your code here
     """Search for magic word thru file"""
