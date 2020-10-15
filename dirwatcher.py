@@ -11,7 +11,7 @@ import os
 import logging
 import signal
 import datetime
-# import time
+import time
 
 exit_flag = False
 start_time = ''
@@ -27,13 +27,6 @@ def create_dir(ns):
     else:
         return False
 
-
-# def scan_single_file(filename):
-#     logger = logging.getLogger(__name__)
-#     logger.setLevel(logging.info)
-#     logger.error('')
-
-#     pass
 
 def signal_handler(sig_num, frame):
     # Your code here
@@ -119,7 +112,7 @@ def create_parser():
         help='filters what kind of file extenion to search within',
         default='.txt')
     parser.add_argument(
-        'todir', help='specifies the directory to watch')
+        '--todir', help='specifies the directory to watch')
     return parser
 
 
@@ -145,8 +138,8 @@ def main(args):
             logger.exception(f'{e}')
 
         # put a sleep inside my while loop so I don't peg the
-        #  cpu usage at 100%
-        # time.sleep(polling_interval)
+        # cpu usage at 100%
+        time.sleep(ns.interval)
 
 
 if __name__ == '__main__':
