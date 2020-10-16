@@ -14,15 +14,15 @@ import datetime
 import time
 
 exit_flag = False
-start_time = ''
+start_time = datetime.datetime.now()
 master_dict = {}
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s,%(message)s')
 logger = logging.getLogger(__name__)
 
 
-def create_dir(ns):
+def create_dir(dir):
     """ Checks if directory exists, return true or false"""
-    if os.path.isdir(ns.todir):
+    if os.path.exists(dir):
         return True
     else:
         return False
@@ -49,37 +49,39 @@ def signal_handler(sig_num, frame):
     exit_flag = True
 
 
-def watch_directory(ns):
-    # Your code here
-    temp_dict = {}
-    check_dir_status = create_dir(ns.todir)
-
-    try:
-        if check_dir_status:
-            for content in os.walk(ns.todir):
-                files = content[2]
-            for file in files:
-                if file.endswith(ns.tofilter):
-                    temp_dict.setdefault(file, [])
-        else:
-            logger.error(f"{ns.todir} doesn't exists")
-    except Exception as e:
-        logger.exception(f'{e}')
-
-
 def compare_dict(temp_dict, ns):
     """ Compares files between mast dict and temp dict"""
     try:
         for file in temp_dict:
             if file not in master_dict:
-                logger.info(f'{file} was added to {ns.todir}')
+                logger.info(f'{file} was added to {ns.dir}')
                 master_dict[file] = []
-        for file in master_dict:
+        for file, line in list(master_dict.items()):
             if file not in temp_dict:
-                logger.info(f'{file} was deleted from {ns.todir}')
+                logger.info(f'{file} was deleted from {ns.dir}')
                 del master_dict[file]
     except Exception as e:
         logger.exception(f'{e}')
+
+
+def watch_directory(ns):
+    # Your code here
+    temp_dict = {}
+    check_dir_status = create_dir(ns.dir)
+
+    try:
+        if check_dir_status:
+            for content in os.walk(ns.dir):
+                files = content[2]
+            for file in files:
+                if file.endswith(ns.tofilter):
+                    temp_dict.setdefault(file, [])
+        else:
+            logger.error(f"{ns.dir} doesn't exists")
+    except Exception as e:
+        logger.exception(f'{e}')
+
+    compare_dict(temp_dict, ns)
 
 
 def search_for_magic(ns):
@@ -87,7 +89,7 @@ def search_for_magic(ns):
     """Search for magic word through file"""
     try:
         for file in master_dict:
-            with open(f'{ns.todir}/{file}') as f:
+            with open(f'{ns.dir}/{file}') as f:
                 for i, line in enumerate(f):
                     if ns.magic in line:
                         if i not in master_dict[file]:
@@ -112,7 +114,7 @@ def create_parser():
         help='filters what kind of file extenion to search within',
         default='.txt')
     parser.add_argument(
-        '--todir', help='specifies the directory to watch')
+        'dir', help='specifies the directory to watch')
     return parser
 
 
@@ -132,7 +134,6 @@ def main(args):
         try:
             # call my directory watching function
             watch_directory(ns)
-            compare_dict(ns)
             search_for_magic(ns)
         except Exception as e:
             logger.exception(f'{e}')
